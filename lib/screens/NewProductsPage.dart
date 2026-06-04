@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../theme/app_text_styles.dart';
+import 'package:appr/widgets/app_bar.dart';
+import 'package:appr/widgets/snakbar.dart'; // استدعاء الكلاس الجديد
+
 class NewProductsPage extends StatelessWidget {
   final List<Map<String, dynamic>> cartItems;
   final List<Map<String, dynamic>> favoriteItems;
@@ -18,12 +21,9 @@ class NewProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("New Product",
-        style: TextStyle(color: Color.fromARGB(255, 255, 255, 255),fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFFCAB273)
-      ,
+      appBar: const CustomAppBar(
+        title: "New Product",
+        showBack: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -52,7 +52,6 @@ class NewProductsPage extends StatelessWidget {
               final product = products[index];
               final category = (product["category"] ?? "").toLowerCase();
 
-              // 👇 نحدد الصورة حسب الكاتيجوري
               String imagePath = "images/placeholder.png";
               if (category == "rings") {
                 imagePath = "images/r1.jpg";
@@ -115,19 +114,13 @@ class NewProductsPage extends StatelessWidget {
                       right: 10,
                       child: GestureDetector(
                         onTap: () {
-                          
                           onToggleFavorite(item);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: const Color(0xFFCAB273),
-                              content: Text(
-  favoriteItems.contains(item)
-      ? "Added to favorites"
-      : "Removed from favorites",
-),
-
-                              duration: const Duration(seconds: 2),
-                            ),
+                          AppSnackBar.show(
+                            context,
+                            message: favoriteItems.contains(item)
+                                ? "❤️ Added to favorites"
+                                : "❌ Removed from favorites",
+                            icon: Icons.favorite,
                           );
                         },
                         child: Container(
@@ -156,13 +149,10 @@ class NewProductsPage extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () {
                           onAddToCart(item);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: const Color(0xFFCAB273),
-                             content: const Text("Product added to cart"),
-
-                              duration: const Duration(seconds: 2),
-                            ),
+                          AppSnackBar.show(
+                            context,
+                            message: "🛒 Product added to cart",
+                            icon: Icons.shopping_cart,
                           );
                           Navigator.of(context).pushNamed("cartpage");
                         },

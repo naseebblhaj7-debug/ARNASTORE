@@ -2,16 +2,14 @@ import 'package:appr/screens/base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../widgets/snakbar.dart'; // كلاس AppSnackBar
 
 final GoogleSignIn googleSignIn = GoogleSignIn(
   scopes: <String>["email"],
 );
 
 Future<UserCredential> signInWithGoogle() async {
-  // نعمل signOut عشان يطلع شاشة اختيار الحسابات
-  await googleSignIn.signOut();
-
-  // بعدين signIn
+  await googleSignIn.signOut(); // يطلع شاشة اختيار الحساب
   final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
   if (googleUser == null) {
@@ -53,20 +51,20 @@ class AuthGoogleButton extends StatelessWidget {
         onPressed: () async {
           try {
             final userCredential = await signInWithGoogle();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  "Login successful: ${userCredential.user?.email}",
-                ),
-              ),
+            AppSnackBar.show(
+              context,
+              message: "✅ Login successful: ${userCredential.user?.email}",
+              icon: Icons.check_circle,
             );
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const HomePage()),
             );
           } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Login failed: $e")),
+            AppSnackBar.show(
+              context,
+              message: "❌ Login failed: $e",
+              icon: Icons.error,
             );
           }
         },

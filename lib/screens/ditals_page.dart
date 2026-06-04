@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/custom_button.dart';
 import '../widgets/product_image_slider.dart';
-
+import 'package:appr/widgets/app_bar.dart';
 class ProductDetailsPage extends StatefulWidget {
   final Map<String, dynamic> product;
 
@@ -19,18 +19,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 201, 198, 192),
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
-          "Product Details",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-      ),
+return Scaffold(
+  
+  appBar: const CustomAppBar(
+    title: "Product Details",
+    showBack: true,
+  ),
+
+
       body: SingleChildScrollView(
         child: Column(
           children: [

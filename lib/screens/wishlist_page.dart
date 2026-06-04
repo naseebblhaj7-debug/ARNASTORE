@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widget/wishlist_empty_state.dart';
 import '../widget/wishlist_header.dart';
 import '../widget/wishlist_item_card.dart';
+import '../widgets/snakbar.dart'; // استدعاء الكلاس الجديد
 
 class WishlistPage extends StatelessWidget {
   final List<Map<String, dynamic>> favoriteItems;
@@ -65,14 +66,11 @@ class WishlistPage extends StatelessWidget {
                         onRemove: () => removeItem(product),
                         onAddToCart: () {
                           addToCart(product);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: brandGold,
-                              content: Text(
+                          AppSnackBar.show(
+                            context,
+                            message:
                                 "${product["title"] ?? "Item"} added to cart 🛒",
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ),
+                            icon: Icons.shopping_cart,
                           );
                         },
                       );

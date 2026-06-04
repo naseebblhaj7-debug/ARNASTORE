@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../widgets/snakbar.dart'; // كلاس AppSnackBar
+import '../widgets/custom_button.dart'; // كلاس CustomButton
 
 class AuthButton extends StatelessWidget {
   final bool isLogin;
@@ -36,7 +38,6 @@ class AuthButton extends StatelessWidget {
             .get();
 
         if (!doc.exists) {
-          // لو الحساب مش موجود في Firestore → رجعه للصفحة الرئيسية
           Navigator.of(context).pushReplacementNamed("CartPage");
           return;
         }
@@ -44,17 +45,15 @@ class AuthButton extends StatelessWidget {
         final role = doc.data()?["role"] ?? "user";
 
         if (role == "admin") {
-          Navigator.of(
-            context,
-          ).pushReplacementNamed("DashboardPage"); // صفحة الأدمن
+          Navigator.of(context).pushReplacementNamed("DashboardPage");
         } else {
-          Navigator.of(context).pushReplacementNamed("base_page"); // صفحة عادية
+          Navigator.of(context).pushReplacementNamed("base_page");
         }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Login successful: ${userCredential.user?.email}"),
-          ),
+        AppSnackBar.show(
+          context,
+          message: "✅ Login successful: ${userCredential.user?.email}",
+          icon: Icons.check_circle,
         );
       } else {
         // إنشاء حساب جديد
@@ -64,19 +63,18 @@ class AuthButton extends StatelessWidget {
               password: passwordController.text.trim(),
             );
 
-        // إضافة المستخدم الجديد في Firestore مع role = user
         await FirebaseFirestore.instance
             .collection("users")
             .doc(userCredential.user!.uid)
             .set({
               "email": userCredential.user?.email,
-              "role": "user", // 👈 افتراضي عادي
+              "role": "user",
             });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Signup successful: ${userCredential.user?.email}"),
-          ),
+        AppSnackBar.show(
+          context,
+          message: "✅ Signup successful: ${userCredential.user?.email}",
+          icon: Icons.check_circle,
         );
 
         Navigator.of(context).pushReplacementNamed("CartPage");
@@ -99,13 +97,17 @@ class AuthButton extends StatelessWidget {
         default:
           errorMessage = e.message ?? "An error occurred";
       }
-      ScaffoldMessenger.of(
+      AppSnackBar.show(
         context,
-      ).showSnackBar(SnackBar(content: Text(errorMessage)));
+        message: "❌ $errorMessage",
+        icon: Icons.error,
+      );
     } catch (e) {
-      ScaffoldMessenger.of(
+      AppSnackBar.show(
         context,
-      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+        message: "❌ Error: $e",
+        icon: Icons.error,
+      );
     }
   }
 
@@ -125,20 +127,17 @@ class AuthButton extends StatelessWidget {
           ),
         ],
       ),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-        ),
-        onPressed: () => _handleAuth(context),
-        child: Text(
-          isLogin ? "Login" : "Sign Up",
-          style: TextStyle(
-            color: gold,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      child: CustomButton(
+        text: isLogin ? "Login" : "Sign Up",   // النص حسب الحالة
+        onPressed: () => _handleAuth(context), // الفنكشن اللي ينفذ
+        backgroundColor: Colors.transparent,   // الخلفية
+        textColor: gold,                       // لون النص
+        fontSize: 18,                          // حجم الخط
+        fontWeight: FontWeight.bold,           // وزن الخط
+        height: 58,                            // ارتفاع الزر
+        width: double.infinity,                // عرض الزر
+        borderRadius: 15,                      // الحواف
+        elevation: 0,                          // بدون ظل
       ),
     );
   }

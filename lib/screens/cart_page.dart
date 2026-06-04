@@ -4,6 +4,7 @@ import 'auth_screen.dart';
 import '../widgetss/cart_empty_state.dart';
 import '../widgetss/cart_item_card.dart';
 import '../widgetss/cart_checkout_section.dart';
+import '../widgets/snakbar.dart'; // استدعاء الكلاس الجديد
 
 class CartPage extends StatefulWidget {
   final List<Map<String, dynamic>> cartItems;
@@ -58,7 +59,6 @@ class _CartPageState extends State<CartPage> {
             fontSize: 24,
           ),
         ),
-      
       ),
       body: widget.cartItems.isEmpty
           ? CartEmptyState(brandGold: brandGold, darkText: darkText)
@@ -86,11 +86,10 @@ class _CartPageState extends State<CartPage> {
                   isLoggedIn: currentUser != null, // 👈 يعتمد على حالة الدخول
                   onCheckout: () {
                     if (currentUser != null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: brandGold,
-                          content: const Text("✅ Order placed successfully"),
-                        ),
+                      AppSnackBar.show(
+                        context,
+                        message: "✅ Order placed successfully",
+                        icon: Icons.check_circle,
                       );
                     } else {
                       Navigator.push(

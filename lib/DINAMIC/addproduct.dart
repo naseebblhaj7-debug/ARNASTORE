@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:appr/widgets/app_bar.dart';
+import '../widgets/snakbar.dart'; // استدعاء الكلاس الجديد
 
 class AddProductPage extends StatefulWidget {
   const AddProductPage({super.key});
@@ -25,13 +27,12 @@ class _AddProductPageState extends State<AddProductPage> {
         "createdAt": FieldValue.serverTimestamp(),
       });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-       SnackBar(
-                          backgroundColor: Color(0xFFCAB273),
-                          content: const Text("✅ Order added successfully"),
-  
-),
-    );
+      AppSnackBar.show(
+        context,
+        message: "✅ Product added successfully",
+        icon: Icons.check_circle,
+      );
+
       Navigator.pop(context);
     }
   }
@@ -50,11 +51,9 @@ class _AddProductPageState extends State<AddProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Add Product",
-       style: TextStyle(color: Color.fromARGB(255, 255, 255, 255),),),
-       
-        backgroundColor: const Color(0xFFCAB273),
+      appBar: const CustomAppBar(
+        title: "Add Product",
+        showBack: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -101,7 +100,11 @@ class _AddProductPageState extends State<AddProductPage> {
                 ),
                 child: const Text(
                   "Add Product",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold ,color: Color.fromARGB(255, 255, 255, 255),),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

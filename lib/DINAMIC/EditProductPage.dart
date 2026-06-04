@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:appr/widgets/app_bar.dart';
+import '../widgets/snakbar.dart'; // استدعاء الكلاس الجديد
 
 class EditProductPage extends StatefulWidget {
   final DocumentSnapshot product;
@@ -41,21 +43,10 @@ class _EditProductPageState extends State<EditProductPage> {
             'category': categoryController.text.trim(),
           });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-            "✅ Product added successfully",
-            style: TextStyle(
-              color: Color.fromARGB(255, 248, 246, 246),
-            ), 
-          ),
-          backgroundColor: const Color(0xFFCAB273), // اللون الذهبي
-          behavior:
-              SnackBarBehavior.floating, // يخليها تطلع بشكل أنيق فوق المحتوى
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12), // حواف دائرية
-          ),
-        ),
+      AppSnackBar.show(
+        context,
+        message: "✅ Product updated successfully",
+        icon: Icons.check_circle,
       );
 
       Navigator.pop(context);
@@ -74,13 +65,9 @@ class _EditProductPageState extends State<EditProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Edit Product",
-          style: TextStyle(color: Color.fromARGB(255, 248, 246, 246)),
-        ),
-
-        backgroundColor: const Color(0xFFCAB273),
+      appBar: const CustomAppBar(
+        title: "Edit Product",
+        showBack: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -130,7 +117,7 @@ class _EditProductPageState extends State<EditProductPage> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 255, 255, 255),
+                    color: Colors.white,
                   ),
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../widgets/snakbar.dart'; // استدعاء الكلاس الجديد
 
 class BestSellerItem extends StatelessWidget {
   final String imgPath;
@@ -57,11 +58,20 @@ class BestSellerItem extends StatelessWidget {
             top: 10,
             right: 10,
             child: GestureDetector(
-              onTap: () => onToggleFavorite({
-                "image": imgPath,
-                "title": "Luxury Jewelry",
-                "price": price,
-              }),
+              onTap: () {
+                onToggleFavorite({
+                  "image": imgPath,
+                  "title": "Luxury Jewelry",
+                  "price": price,
+                });
+                AppSnackBar.show(
+                  context,
+                  message: favoriteItems.any((item) => item["image"] == imgPath)
+                      ? " Added to favorites"
+                      : "❌ Removed from favorites",
+                  icon: Icons.favorite,
+                );
+              },
               child: Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
@@ -93,27 +103,10 @@ class BestSellerItem extends StatelessWidget {
                   "price": price,
                   "quantity": 1,
                 });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    behavior: SnackBarBehavior.floating,
-                    margin: const EdgeInsets.all(12),
-                    backgroundColor: AppColors.brandGold,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    content: Row(
-                      children: const [
-                        Icon(Icons.check_circle, color: Colors.white),
-                        SizedBox(width: 10),
-                        Text(
-                          "Added to cart successfully",
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                    duration: const Duration(seconds: 2),
-                    elevation: 8,
-                  ),
+                AppSnackBar.show(
+                  context,
+                  message: "🛒 Added to cart successfully",
+                  icon: Icons.check_circle,
                 );
               },
               child: Container(
@@ -136,6 +129,8 @@ class BestSellerItem extends StatelessWidget {
               ),
             ),
           ),
+
+          /// العنوان + السعر
           Positioned(
             bottom: 12,
             left: 12,

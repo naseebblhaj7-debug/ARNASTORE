@@ -1,9 +1,11 @@
 import 'package:appr/screens/base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // 👈 مهم لتسجيل الخروج
-import 'package:appr/DINAMIC/addproduct.dart'; // استدعاء صفحة الإضافة
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:appr/DINAMIC/addproduct.dart';
 import 'EditProductPage.dart';
+import 'package:appr/widgets/app_bar.dart';
+import '../widgets/snakbar.dart'; // استدعاء الكلاس الجديد
 
 class DashboardPage extends StatelessWidget {
   final CollectionReference products =
@@ -12,33 +14,33 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Dashboard", style: TextStyle(color: Color.fromARGB(255, 248, 246, 246)),),
-        backgroundColor: const Color(0xFFCAB273),
-    actions: [
-  IconButton(
-    icon: const Icon(Icons.home), // 👈 أيقونة البيت
-    onPressed: () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomePage()),
-      );
-    },
-  ),
-  IconButton(
-    icon: const Icon(Icons.logout),
-    onPressed: () async {
-      await FirebaseAuth.instance.signOut(); // 👈 تسجيل خروج
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("🚪 Logged out successfully")),
-      );
-      Navigator.pushReplacementNamed(context, "base_page"); 
-      // يرجعك لصفحة البروفايل
-    },
-  ),
-],
-),
-
+      appBar: CustomAppBar(
+        title: "Dashboard",
+        showBack: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const HomePage()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              AppSnackBar.show(
+                context,
+                message: "🚪 Logged out successfully",
+                icon: Icons.logout,
+              );
+              Navigator.pushReplacementNamed(context, "base_page");
+            },
+          ),
+        ],
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: products.orderBy("createdAt", descending: false).snapshots(),
         builder: (context, snapshot) {
@@ -74,8 +76,10 @@ class DashboardPage extends StatelessWidget {
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () async {
                           await products.doc(product.id).delete();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("🗑️ Product deleted")),
+                          AppSnackBar.show(
+                            context,
+                            message: "🗑️ Product deleted",
+                            icon: Icons.delete,
                           );
                         },
                       ),
