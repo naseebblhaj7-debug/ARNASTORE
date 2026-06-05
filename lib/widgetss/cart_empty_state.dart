@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:appr/widgets/custom_button.dart'; // 👈 استدعاء الكوستوم بوتون
 
 class CartEmptyState extends StatelessWidget {
   final Color brandGold;
@@ -16,6 +17,7 @@ class CartEmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // الأيقونة داخل دائرة
           Container(
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
@@ -34,6 +36,8 @@ class CartEmptyState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 28),
+
+          // العنوان
           Text(
             "Your Cart Is Empty",
             style: TextStyle(
@@ -44,6 +48,8 @@ class CartEmptyState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
+
+          // الرسالة
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Text(
@@ -57,42 +63,21 @@ class CartEmptyState extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 35),
-          Container(
-            height: 55,
+
+          // زر باستخدام CustomButton
+          CustomButton(
+            text: "Start Shopping",
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            backgroundColor: brandGold,
+            textColor: Colors.white,
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
             width: 220,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              gradient: LinearGradient(
-                colors: [brandGold, const Color(0xFFD8C08A)],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: brandGold.withOpacity(0.35),
-                  blurRadius: 15,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
-                ),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Start Shopping",
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            height: 55,
+            borderRadius: 18,
+            elevation: 0,
           ),
         ],
       ),
